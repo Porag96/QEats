@@ -40,7 +40,7 @@ public class RestaurantController {
   private RestaurantService restaurantService;
 
   @GetMapping(RESTAURANTS_API)
-  public ResponseEntity<GetRestaurantsResponse> getRestaurants(
+  public ResponseEntity<?> getRestaurants(
       @Valid GetRestaurantsRequest getRestaurantsRequest) {
 
     log.info("getRestaurants called with {}", getRestaurantsRequest);
@@ -49,7 +49,10 @@ public class RestaurantController {
     getRestaurantsResponse = restaurantService
           .findAllRestaurantsCloseBy(getRestaurantsRequest, LocalTime.now());
       log.info("getRestaurants returned {}", getRestaurantsResponse);
-
+    
+    if(getRestaurantsResponse.getRestaurants().size() == 0){
+      return ResponseEntity.ok().body("No Restaurant found at your Location");
+    }
     return ResponseEntity.ok().body(getRestaurantsResponse);
   }
 
